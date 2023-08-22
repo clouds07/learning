@@ -1,5 +1,5 @@
 // Program converted to C++
-// with commencts changed to one line
+// with comments changed to one line
 // io changed to iostream
 // and so on...
 // maintained the number of parameters for the summing function
