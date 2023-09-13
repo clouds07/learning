@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,6 +25,11 @@ static double prob()
 static int randCost()
 {
     return rand() % 11;
+}
+
+bool isEqual(const std::pair<int, int>& element)
+{
+    return element.first == 0;
 }
 
 // Graph class definition
@@ -105,30 +111,64 @@ void graph::minimumCostPath(int nodeA, int nodeB)
 {
     int oldSize = 0, cSize = 0;
     int minCost = numeric_limits<int>::max();
-    bool* closedSet = new bool[graphSize];
-    bool* openSet = new bool[graphSize];
+    bool* closedSetNodes = new bool[graphSize];
+    bool* openSetNodes = new bool[graphSize];
 
-    vector<int> allNodes;               // Set of all the nodes
-    vector<int> closedSetNodes;         // Set of nodes that have known shortest distances
-    vector<int> openSetNodes;           // Set of nodes that are reachable
+    vector<int> allNodes;                       // Set of all the nodes
+    vector<pair<int, int>> closedSet;           // Set of nodes that have known shortest distances
+    vector<pair<int, int>> openSet;             // Set of nodes that are reachable
 
     for (int i = 0; i < graphSize; ++i)
     {
-        openSet[i] = closedSet[i] = false;
+        openSetNodes[i] = closedSetNodes[i] = false;
     }
 
-    closedSet[nodeA] = true;
+    closedSetNodes[nodeA] = true;
 
-    while (closedSetNodes.size() < graphSize)
+    closedSet.push_back(make_pair(nodeA, 0));
+
+    int minCostNode;
+    int currentNode = nodeA;
+
+
+    for (int j = 0; j < graphSize; ++j)
+    {
+        find_if(openSet.begin(), openSet.end(), isEqual())
+
+        if ((graph_[currentNode][j] != 0) && (j))
+        {
+            openSet.push_back(make_pair(j, graph_[currentNode][j]));
+        }
+    }
+
+
+    for (int j = 0; j < graphSize; ++j)
     {
 
-    }
-    
+        if (graph_[currentNode][j] != 0)
+        {
+            // Add adjacent nodes to the Open Set
+            openSetNodes[j] = true;
 
+            // Choose the node with the least cost, from the open set
+            if ((graph_[currentNode][j] != 0) && (minCost > graph_[currentNode][j]))
+            {
+                openSet.push_back(make_pair(currentNode, graph_[currentNode][j]));
+
+                minCost = graph_[currentNode][j];
+                minCostNode = j;
+            }
+        }
+    }
+
+    while (closedSet.size() < graphSize)
+    {
+        
+    }
 
     // Cleanup
-    delete[] closedSet;
-    delete[] openSet;
+    delete[] closedSetNodes;
+    delete[] openSetNodes;
 }
 
 int main(void)
