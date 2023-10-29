@@ -20,11 +20,6 @@ static double prob()
     return prob_;
 }
 
-bool isEqual(const pair<int, int>& element)
-{
-    return element.first == 0;
-}
-
 // This function searches through a set of <node, cost> for a given node
 // Returns true if the node exists in the set
 bool find(vector<pair<int, int>> &searchSet, int node)
@@ -137,6 +132,7 @@ void graph::minimumCostPath(int nodeA, int nodeB)
 
     int nodeIndex = 0;
     int currentNode = nodeA;
+    bool noPath = false;
 
     do 
     {
@@ -154,8 +150,7 @@ void graph::minimumCostPath(int nodeA, int nodeB)
         // No nodes in the open set, so no path found
         if (!openSet.size())
         {
-            cout << "No path found" << endl;
-            return;
+            noPath = true;
         }
 
         // Choose the node with the least cost, from the open set
@@ -174,15 +169,22 @@ void graph::minimumCostPath(int nodeA, int nodeB)
         openSet.erase(openSet.begin() + nodeIndex);
 
         currentNode = closedSet.back().first;
-    } while (currentNode != nodeB);
+    } while ((currentNode != nodeB) || !noPath);
 
-    cout << "Found a path: " << endl;
-
-    for(const auto &elem : closedSet)
+    if (!noPath)
     {
-        cout << elem.first << " ";
+        cout << "Found a path: " << endl;
+
+        for(const auto &elem : closedSet)
+        {
+            cout << elem.first << " ";
+        }
+        cout << endl;
     }
-    cout << endl;
+    else
+    {
+        cout << "No path found" << endl;
+    }
 
     // Cleanup
     delete[] closedSetNodes;
