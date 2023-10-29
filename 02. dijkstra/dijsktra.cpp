@@ -7,9 +7,8 @@
 
 using namespace std;
 
-constexpr int vectorLen = 40;
-constexpr int graphSize = 40;
-constexpr double density = 0.19f;
+constexpr int graphSize = 15;
+constexpr double density = 0.40f;
 
 // Static function used to create the graph
 static double prob()
@@ -21,15 +20,23 @@ static double prob()
     return prob_;
 }
 
-// Static function used to set the edge costs
-static int randCost()
-{
-    return rand() % 11;
-}
-
-bool isEqual(const std::pair<int, int>& element)
+bool isEqual(const pair<int, int>& element)
 {
     return element.first == 0;
+}
+
+// This function searches through a set of <node, cost> for a given node
+// Returns true if the node exists in the set
+bool find(vector<pair<int, int>> &searchSet, int node)
+{
+    for(auto &elem : searchSet)
+    {
+        if (elem.first == node)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 // Graph class definition
@@ -53,7 +60,6 @@ protected:
 // the graph density and the maximum cost (random generated)
 graph::graph(int size, double density, int maxCost)
 {
-    cout << "Constructor execution" << endl;
     graphSize = size;
     maxEdgeCost = maxCost;
     graphDensity = density;
@@ -73,7 +79,7 @@ graph::graph(int size, double density, int maxCost)
             } else {
                 if (prob() < density) {
                     // Initialize edges with random cost
-                    graph_[i][j] = randCost();
+                    graph_[i][j] = rand() % 11;
                 } else {
                     // Initialize no edge with zero
                     graph_[i][j] = 0;
@@ -95,8 +101,6 @@ graph::graph(int size, double density, int maxCost)
 // Class destructor
 graph::~graph()
 {
-    cout << "Destructor execution" << endl;
-
     // Free the allocated memory
     for (int i = 0; i < graphSize; ++i) {
         delete[] graph_[i];
@@ -110,7 +114,6 @@ graph::~graph()
 void graph::minimumCostPath(int nodeA, int nodeB)
 {
     int oldSize = 0, cSize = 0;
-    int minCost = numeric_limits<int>::max();
     bool* closedSetNodes = new bool[graphSize];
     bool* openSetNodes = new bool[graphSize];
 
@@ -118,53 +121,68 @@ void graph::minimumCostPath(int nodeA, int nodeB)
     vector<pair<int, int>> closedSet;           // Set of nodes that have known shortest distances
     vector<pair<int, int>> openSet;             // Set of nodes that are reachable
 
+    if ((nodeA > graphSize) || (nodeB > graphSize))
+    {
+        cout << "Invalid node values" << endl;
+        return;
+    }
+
     for (int i = 0; i < graphSize; ++i)
     {
         openSetNodes[i] = closedSetNodes[i] = false;
     }
 
     closedSetNodes[nodeA] = true;
-
     closedSet.push_back(make_pair(nodeA, 0));
 
-    int minCostNode;
+    int nodeIndex = 0;
     int currentNode = nodeA;
 
-
-    for (int j = 0; j < graphSize; ++j)
+    do 
     {
-        find_if(openSet.begin(), openSet.end(), isEqual())
-
-        if ((graph_[currentNode][j] != 0) && (j))
+        // Add all accessible nodes to the open set
+        for (int j = 0; j < graphSize; ++j)
         {
-            openSet.push_back(make_pair(j, graph_[currentNode][j]));
-        }
-    }
-
-
-    for (int j = 0; j < graphSize; ++j)
-    {
-
-        if (graph_[currentNode][j] != 0)
-        {
-            // Add adjacent nodes to the Open Set
-            openSetNodes[j] = true;
-
-            // Choose the node with the least cost, from the open set
-            if ((graph_[currentNode][j] != 0) && (minCost > graph_[currentNode][j]))
+            if ((graph_[currentNode][j] != 0) &&
+                !find(closedSet, j) &&
+                !find(openSet, j))
             {
-                openSet.push_back(make_pair(currentNode, graph_[currentNode][j]));
-
-                minCost = graph_[currentNode][j];
-                minCostNode = j;
+                openSet.push_back(make_pair(j, graph_[currentNode][j]));
             }
         }
-    }
 
-    while (closedSet.size() < graphSize)
+        // No nodes in the open set, so no path found
+        if (!openSet.size())
+        {
+            cout << "No path found" << endl;
+            return;
+        }
+
+        // Choose the node with the least cost, from the open set
+        int minCost = numeric_limits<int>::max();
+        for (auto elem = openSet.begin(); elem < openSet.end(); ++elem)
+        {
+            if (elem->second < minCost)
+            {
+                minCost = elem->second;
+                nodeIndex = distance(openSet.begin(), elem);
+            }
+        }
+
+        // Add node to the closed set
+        closedSet.push_back(make_pair(openSet.at(nodeIndex).first, openSet.at(nodeIndex).second));
+        openSet.erase(openSet.begin() + nodeIndex);
+
+        currentNode = closedSet.back().first;
+    } while (currentNode != nodeB);
+
+    cout << "Found a path: " << endl;
+
+    for(const auto &elem : closedSet)
     {
-        
+        cout << elem.first << " ";
     }
+    cout << endl;
 
     // Cleanup
     delete[] closedSetNodes;
@@ -173,12 +191,12 @@ void graph::minimumCostPath(int nodeA, int nodeB)
 
 int main(void)
 {
-    graph testGraph(graphSize, density);
-
     // Initialize the random generator
     srand(time(0));
 
-    testGraph.minimumCostPath(1, 17);
+    graph testGraph(graphSize, density);
 
-    testGraph.minimumCostPath(10, 25);
+    testGraph.minimumCostPath(1, 4);
+
+    testGraph.minimumCostPath(2, 13);
 }
