@@ -48,6 +48,12 @@ def main():
                 game_over = True
                 break
 
+        for asteroid in asteroids_group:
+            for bullet in bullets_group:
+                if asteroid.collides_with(bullet):
+                    asteroid.split()
+                    bullet.kill()
+
         # Step 3: Draw the game onto the screen
         screen.fill("black")
         for thing in drawable_group:
