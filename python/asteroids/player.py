@@ -27,8 +27,17 @@ class Player(CircleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
 
-        print(self.position)
+        if self.position.x < 0:
+            self.position.x += SCREEN_WIDTH
+        elif self.position.x > SCREEN_WIDTH:
+            self.position.x -= SCREEN_WIDTH
 
+        if self.position.y < 0:
+            self.position.y += SCREEN_HEIGHT
+        elif self.position.y > SCREEN_HEIGHT:
+            self.position.y -= SCREEN_HEIGHT
+
+    # override
     def update(self, dt):
         keys = pygame.key.get_pressed()
 

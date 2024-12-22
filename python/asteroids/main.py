@@ -4,6 +4,8 @@
 import pygame
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print("Starting asteroids!")
@@ -12,30 +14,35 @@ def main():
 
     pygame.init()
     
-    clock = pygame.time.Clock()
-    dt = 0
+    updatable_group = pygame.sprite.Group()
+    drawable_group = pygame.sprite.Group()
+    asteroids_group = pygame.sprite.Group()
+
+    Player.containers = (updatable_group, drawable_group)
+    Asteroid.containers = (asteroids_group, updatable_group, drawable_group)
+    AsteroidField.containers = (updatable_group)
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
+    player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    asteroidField = AsteroidField()
 
-    player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2) 
+    dt = 0
 
     while True:
+        # Step 1: Check for player inputs
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        # Step 1: Check for player inputs
-        
 
         # Step 2: Update the game world
+        for thing in updatable_group:
+            thing.update(dt)
 
         # Step 3: Draw the game onto the screen
-        sky_surface = pygame.surface.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        sky_rect = pygame.Surface.fill(sky_surface, "black")
-
-        player.update(dt)
-
         screen.fill("black")
-        player.draw(screen)
+        for thing in drawable_group:
+            thing.draw(screen)
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
