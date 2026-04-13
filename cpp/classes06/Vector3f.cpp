@@ -40,12 +40,19 @@ Vector3f Vector3f::operator+ (const Vector3f& rhs) const {
 }
 
 Vector3f& Vector3f::operator++() {
-    x = x + 1;
-    y = y + 1;
-    z = z + 1;
+    x = x + 1.0f;
+    y = y + 1.0f;
+    z = z + 1.0f;
 
     return *this;
 }
+
+/*
+bool Vector3f::operator==(const Vector3f& rhs) const {
+    std::cout << "part of class " << std::endl;
+    return (x == rhs.x) && (y == rhs.y) && (z == rhs.z);
+}
+*/
 
 void Vector3f::PrintData() {
     std::cout << "Vector3f data: ";

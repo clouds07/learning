@@ -17,6 +17,7 @@ class Vector3f {
         
         // preincrement operator
         Vector3f& operator++();
+        // bool operator==(const Vector3f& rhs) const;
 
         friend std::ostream& operator<<(std::ostream& os, const Vector3f& obj);
 
