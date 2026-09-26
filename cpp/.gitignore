@@ -1,10 +1,15 @@
+# Ignore everything
 *
 .vscode/
 
+# Except:
 !.gitignore
-
+!*.c
 !*.cpp
+!*.h
 !*.hpp
+
+!*.png
 
 !*.go
 !*.mod
@@ -15,3 +20,5 @@
 
 !*.md
 
+# Even in subdirectories
+!*/
