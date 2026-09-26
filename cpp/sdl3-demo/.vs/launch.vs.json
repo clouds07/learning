@@ -1,0 +1,16 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "sdl3-demo.exe",
+      "name": "sdl3-demo.exe",
+      "env": {
+        "PATH": "${env.PATH};d:/sdk/sdl3/lib/x64;d:/sdk/sdl3_image/lib/x64"
+      },
+      "currentDir": "d:/repos/learning/cpp/sdl3-demo"
+    }
+  ]
+}
